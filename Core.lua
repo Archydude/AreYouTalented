@@ -6,7 +6,7 @@
 -- Files, in load order (see the .toc):
 --   Core.lua      namespace, saved settings, slash command
 --   Talents.lua   reading talents: the player's own, and party members' by inspecting them
---   Badges.lua    the spec icon and text on the party frames
+--   Badges.lua    the spec icon on the party frames
 --   Tooltip.lua   the spec line on player tooltips
 --   Options.lua   Esc > Options > AddOns > Are You Talented?
 
@@ -32,8 +32,6 @@ end
 
 ns.DEFAULTS = {
 	frames = true,     -- the spec icon on the party frames
-	name = true,       -- the spec's name next to the icon
-	points = false,    -- the points in each tree next to the icon, like 5/41/5
 	side = "right",    -- which side of a party frame the icon goes on: "right" | "left"
 	size = 22,         -- the icon's size
 	tooltip = true,    -- a spec line on player tooltips

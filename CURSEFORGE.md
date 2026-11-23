@@ -13,7 +13,7 @@ Are You Talented?
 
 **Summary**
 ```
-Shows each party member's talent spec on the party frames: the icon and name of the talent tree they put the most points in. No inspecting, no clicking. For WoW Forever.
+Shows each party member's talent spec on the party frames, as the icon of the talent tree they put the most points in. No inspecting, no clicking. For WoW Forever.
 ```
 
 **Main category:** `Unit Frames`
@@ -37,14 +37,13 @@ Are You Talented? puts each party member's spec right on their party frame: the 
 - A grey question mark marks a member whose talents haven't been read yet.
 
 ### On the party frames
-- **Spec icon:** the talent tree's own icon, as in the talent window.
-- **Spec name:** next to the icon, like "Fury".
-- **Talent points:** the points in each tree, like "5/41/5", if you turn it on.
-- Works on both kinds of party frames. The standard frames get the icon beside them, with the name and the points. Raid-style party frames get the icon inside the frame, and show your own spec too.
-- You pick which side of the frame the icon goes on, and how big it is.
+- **Spec icon:** the talent tree's own icon, as in the talent window, so you recognize it at once.
+- Works on both kinds of party frames. The standard frames get the icon beside them. Raid-style party frames get the icon inside the frame, and show your own spec too.
+- You pick which side of a standard frame the icon goes on, and how big it is.
+- The icon never gets in the way of clicking a party frame.
 
 ### On tooltips
-Hover a party member and their tooltip gets a line with their spec and points, like "Talents: Fury (5/41/5)". You can turn it off.
+Hover a party member and their tooltip gets a line with the spec's name and the points in each tree, like "Talents: Fury (5/41/5)". Handy for spotting a hybrid build. You can turn it off.
 
 ### Stays up to date
 - Talents are read again about once a minute and on every ready check, so a respec or a switch to a second spec shows soon after.
@@ -54,7 +53,6 @@ Hover a party member and their tooltip gets a line with their spec and points, l
 - **/ayt** opens the options. **/ayt list** writes your party's specs in chat.
 - Talents are read while you're out of combat. Someone who joins mid-fight gets their icon when it ends.
 - A member with no talent points spent gets no icon. With the same points in two trees, the first one shows.
-- Raid-style party frames have room for the icon only; the tooltip has the name and the points.
 - Parties only: raids aren't covered.
 
 This addon was made with AI.
@@ -67,11 +65,11 @@ This addon was made with AI.
 
 ## B. Upload File form
 
-**File:** `dist\AreYouTalented-1.0.0.zip`
+**File:** `dist\AreYouTalented-1.0.1.zip`
 
 **Display name**
 ```
-Are You Talented? 1.0.0
+Are You Talented? 1.0.1
 ```
 
 **Release type:** `Release`
@@ -80,6 +78,9 @@ Are You Talented? 1.0.0
 
 **Changelog** (paste only the newest part; paste older parts too if they never went up)
 ```markdown
+1.0.1
+- The spec's name and the talent points no longer show next to the icon on party frames: the icon alone tells the spec. The member's tooltip still has the name and the points. The two options for them are gone.
+
 1.0.0
 - First release: see each party member's spec on their party frame, as the icon of the talent tree they put the most points in.
 - The spec's name next to the icon, like "Fury", and the points in each tree, like "5/41/5", each one an option.

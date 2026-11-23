@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1
+- The spec's name and the talent points no longer show next to the icon on party frames: the icon alone tells the spec. The member's tooltip still has the name and the points. The two options for them are gone.
+
 ## 1.0.0
 - First release: see each party member's spec on their party frame, as the icon of the talent tree they put the most points in.
 - The spec's name next to the icon, like "Fury", and the points in each tree, like "5/41/5", each one an option.

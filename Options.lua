@@ -64,12 +64,8 @@ function ns.CreateOptions()
 	end
 
 	checkbox("frames", "Show specs on party frames",
-		"Put an icon of each party member's spec on their party frame: the talent tree they put the most points in. "
+		"Put an icon of each party member's spec on their party frame: the talent tree they put the most points in. Their tooltip has the spec's name. "
 			.. "A grey question mark means their talents haven't been read yet; that happens within a few seconds, once you're out of combat.")
-	checkbox("name", "Spec name next to the icon",
-		"Write the spec's name next to the icon, like \"Fury\". Raid-style party frames have no room for it and show the icon only.")
-	checkbox("points", "Talent points next to the icon",
-		"Write the points in each talent tree next to the icon, like \"5/41/5\". Raid-style party frames show the icon only.")
 	dropdown("side", "Icon side", {
 		{ "right", "Right of the party frame" },
 		{ "left", "Left of the party frame" },

@@ -4,18 +4,15 @@ See what spec your party members are, right on the party frames.
 
 Each party frame gets a small icon of the talent tree that member put the most points in: Arms, Fury or Protection for a warrior, Holy, Discipline or Shadow for a priest, and so on. So you can tell at a glance whether the druid is healing, the warrior is tanking, and what the paladin who just joined is here to do.
 
-- **The spec's name** next to the icon, like `Fury`.
-- **The points in each tree** next to the icon, like `5/41/5`, if you turn it on.
+- **No inspecting and no clicking**: each member's spec shows by itself a few seconds after they join.
 - **Both kinds of party frames**: the standard ones, with the icon beside the frame, and the raid-style ones, with the icon inside the frame. Raid-style party frames show your own spec too.
-- **Player tooltips**: hover a party member and the tooltip has a line with their spec and points.
+- **Player tooltips**: hover a party member and the tooltip has a line with their spec's name and the points in each tree, like `Talents: Fury (5/41/5)`.
 
 ## Options
 
 Esc > Options > AddOns > Are You Talented?, or type `/ayt`:
 
 - **Show specs on party frames**: the icons, on or off.
-- **Spec name next to the icon**: on by default.
-- **Talent points next to the icon**: off by default.
 - **Icon side**: right or left of the party frame.
 - **Icon size**: how big the icon is.
 - **Show specs on player tooltips**: the tooltip line, on or off.
@@ -33,7 +30,7 @@ Esc > Options > AddOns > Are You Talented?, or type `/ayt`:
 - Talents are read again about once a minute, and on every ready check, so a respec or a switch to a second spec shows soon after.
 - A member with no talent points spent gets no icon.
 - A member with the same points in two trees shows the first of them.
-- Raid-style party frames have no room for the name or the points; the tooltip has both.
+- On raid-style party frames the icon is always inside the frame, at its right edge, and shrinks to fit.
 - Parties only: raids aren't covered.
 
 Works on **WoW Forever**.

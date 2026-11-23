@@ -1,7 +1,7 @@
 -- Are You Talented?: the spec on the party frames
--- A small icon of the member's talent tree on each party frame, with the tree's name and points
--- next to it. Works on both kinds of party frames: the standard ones (portrait and bars) and the
--- raid-style ones, which also show the player.
+-- A small icon of the member's talent tree on each party frame. The tree's name and points are on
+-- the member's tooltip (see Tooltip.lua). Works on both kinds of party frames: the standard ones
+-- (portrait and bars) and the raid-style ones, which also show the player.
 --
 -- A badge is a frame of our own, a child of the party frame so it moves, scales and hides with
 -- it. It takes no mouse input, so clicks and the member's tooltip work as before.
@@ -29,14 +29,12 @@ local function badgeOn(frame)
 	badge.icon = badge:CreateTexture(nil, "ARTWORK")
 	badge.icon:SetAllPoints()
 	badge.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- without the icon's own border
-	badge.text = badge:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	badge.text:SetShadowOffset(1, -1)
 	badges[frame] = badge
 	return badge
 end
 
--- Puts the badge where the settings say. Standard frames get it outside, beside the bars, with
--- the text on its far side; raid-style frames get it inside, at the right edge, without text.
+-- Puts the badge where the settings say. Standard frames get it outside, beside the bars;
+-- raid-style frames get it inside, at the right edge.
 local function place(badge, frame, compact)
 	local db = ns.db
 	local size = db.size
@@ -48,25 +46,14 @@ local function place(badge, frame, compact)
 	if badge.placed == placed then return end
 	badge.placed = placed
 	badge:ClearAllPoints()
-	badge.text:ClearAllPoints()
 	badge:SetSize(size, size)
 	if compact then
 		badge:SetPoint("RIGHT", frame, "RIGHT", -3, 0)
 	elseif db.side == "left" then
 		badge:SetPoint("RIGHT", frame, "LEFT", 3, 4)
-		badge.text:SetPoint("RIGHT", badge, "LEFT", -4, 0)
 	else
 		badge:SetPoint("LEFT", frame, "RIGHT", 2, 4)
-		badge.text:SetPoint("LEFT", badge, "RIGHT", 4, 0)
 	end
-end
-
-local function label(spec)
-	local db = ns.db
-	if db.name and db.points then return spec.name .. " " .. spec.points end
-	if db.name then return spec.name end
-	if db.points then return spec.points end
-	return ""
 end
 
 local function update(frame, unit, compact)
@@ -90,12 +77,10 @@ local function update(frame, unit, compact)
 		badge.icon:SetTexture(spec.icon or UNKNOWN_ICON)
 		badge.icon:SetDesaturated(false)
 		badge:SetAlpha(1)
-		badge.text:SetText(compact and "" or label(spec))
 	else
 		badge.icon:SetTexture(UNKNOWN_ICON)
 		badge.icon:SetDesaturated(true)
 		badge:SetAlpha(0.6)
-		badge.text:SetText("")
 	end
 	badge:Show()
 end
