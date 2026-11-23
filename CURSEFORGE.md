@@ -21,7 +21,7 @@ Shows each party member's talent spec on the party frames: the icon and name of 
 
 **License:** `MIT License`
 
-**Logo / avatar:** `AreYouTalented\images\logo-v1.png` (not made yet)
+**Logo / avatar:** `AreYouTalented\images\logo-v1.png`
 
 **Description** (paste everything between the lines)
 
