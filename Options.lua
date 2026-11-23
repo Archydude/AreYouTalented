@@ -63,22 +63,22 @@ function ns.CreateOptions()
 		control("Dropdown", setting(key, VarType.String, name), getOptions, tooltip)
 	end
 
-	checkbox("frames", "Show specs on party frames",
-		"Put an icon of each party member's spec on their party frame: the talent tree they put the most points in. Their tooltip has the spec's name. "
+	checkbox("frames", "Show specs on party and raid frames",
+		"Put an icon of each party or raid member's spec on their frame: the talent tree they put the most points in. Their tooltip has the spec's name. "
 			.. "A grey question mark means their talents haven't been read yet; that happens within a few seconds, once you're out of combat.")
 	dropdown("side", "Icon side", {
 		{ "right", "Right of the party frame" },
 		{ "left", "Left of the party frame" },
-	}, "Which side of a party frame the icon goes on. On raid-style party frames it's always inside the frame, at its right edge.")
+	}, "Which side of a standard party frame the icon goes on. On raid frames and raid-style party frames it's always inside the frame, at its right edge.")
 	local sizeOptions = Settings.CreateSliderOptions(MIN_SIZE, MAX_SIZE, 1)
 	sizeOptions:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
 		return tostring(math.floor(value + 0.5))
 	end)
 	control("Slider", setting("size", VarType.Number, "Icon size"), sizeOptions,
-		"How big the icon is. Raid-style party frames shrink it to fit inside the frame.")
+		"How big the icon is. Raid frames and raid-style party frames shrink it to fit inside the frame.")
 	checkbox("tooltip", "Show specs on player tooltips",
-		"Add a line like \"Talents: Fury (5/41/5)\" to the tooltip of a player whose talents were read: your party members, and you.")
-	checkbox("others", "Players outside your party too",
+		"Add a line like \"Talents: Fury (5/41/5)\" to the tooltip of a player whose talents were read: your party or raid members, and you.")
+	checkbox("others", "Players outside your group too",
 		"Also read the talents of any player you point at or target, so their tooltip gets the line too. "
 			.. "It shows a moment after the mouse settles on them, while you're out of combat. Needs Show specs on player tooltips.")
 

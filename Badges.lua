@@ -1,7 +1,7 @@
 -- Are You Talented?: the spec on the party frames
--- A small icon of the member's talent tree on each party frame. The tree's name and points are on
--- the member's tooltip (see Tooltip.lua). Works on both kinds of party frames: the standard ones
--- (portrait and bars) and the raid-style ones, which also show the player.
+-- A small icon of the member's talent tree on each party and raid frame. The tree's name and
+-- points are on the member's tooltip (see Tooltip.lua). Works on the standard party frames
+-- (portrait and bars), the raid-style party frames, which also show the player, and the raid frames.
 --
 -- A badge is a frame of our own, a child of the party frame so it moves, scales and hides with
 -- it. It takes no mouse input, so clicks and the member's tooltip work as before.
@@ -85,22 +85,38 @@ local function update(frame, unit, compact)
 	badge:Show()
 end
 
--- Brings every party frame's badge up to date. Cheap, and called often: on party changes, when
--- talents are read, when a setting changes, and every look at the party (see Talents.lua), since
--- the game hands party frames their members in its own time.
+-- Brings every party and raid frame's badge up to date. Cheap, and called often: on group
+-- changes, when talents are read, when a setting changes, and every look at the group (see
+-- Talents.lua), since the game hands the frames their members in its own time.
 function ns.Refresh()
 	if not ns.db then return end
-	local inParty = IsInGroup() and not IsInRaid()
+	local inGroup = IsInGroup()
 	local standard = PartyFrame and PartyFrame.PartyMemberFramePool
 	if standard then
 		for frame in standard:EnumerateActive() do
-			update(frame, inParty and (frame.unitToken or frame.unit), false)
+			update(frame, inGroup and (frame.unitToken or frame.unit), false)
 		end
 	end
-	local compact = CompactPartyFrame and CompactPartyFrame.memberUnitFrames
-	if compact then
-		for _, frame in ipairs(compact) do
-			update(frame, inParty and frame.unit, true)
+	local done = {}
+	local function compact(frame)
+		if done[frame] then return end
+		done[frame] = true
+		update(frame, inGroup and frame.unit, true)
+	end
+	local party = CompactPartyFrame and CompactPartyFrame.memberUnitFrames
+	if party then
+		for _, frame in ipairs(party) do compact(frame) end
+	end
+	-- The raid frames: each entry is one member's frame, or a group of up to five of them.
+	local raid = CompactRaidFrameContainer and CompactRaidFrameContainer.frameUpdateList
+	raid = raid and raid.normal
+	if raid then
+		for _, entry in ipairs(raid) do
+			if type(entry.memberUnitFrames) == "table" then
+				for _, frame in ipairs(entry.memberUnitFrames) do compact(frame) end
+			else
+				compact(entry)
+			end
 		end
 	end
 end

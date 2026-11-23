@@ -13,7 +13,7 @@ Are You Talented?
 
 **Summary**
 ```
-Shows each party member's talent spec on the party frames, as the icon of the talent tree they put the most points in, and any player's spec on their tooltip. No inspecting, no clicking. For WoW Forever.
+Shows each party and raid member's talent spec on their frame, as the icon of the talent tree they put the most points in, and any player's spec on their tooltip. No inspecting, no clicking. For WoW Forever.
 ```
 
 **Main category:** `Unit Frames`
@@ -21,42 +21,42 @@ Shows each party member's talent spec on the party frames, as the icon of the ta
 
 **License:** `MIT License`
 
-**Logo / avatar:** `AreYouTalented\images\logo-v1.png`
+**Logo / avatar:** `AreYouTalented\images\logo-v2.png` (the newer one; `logo-v1.png` is the first)
 
 **Description** (paste everything between the lines)
 
 ---
 ```markdown
-## See your party's specs at a glance
+## See your group's specs at a glance
 
-Are You Talented? puts each party member's spec right on their party frame: the icon of the talent tree they put the most points in. No inspecting, no clicking, no asking in chat. Made for **WoW Forever**.
+Are You Talented? puts each party and raid member's spec right on their frame: the icon of the talent tree they put the most points in. No inspecting, no clicking. Made for **WoW Forever**.
 
 ### Know who does what
-- Is the druid healing or tanking? Is the warrior Protection or Fury? One look at the party frames tells you.
-- Each member's spec shows a few seconds after they join, even when they're far away.
+- Is the druid healing or tanking? Is the warrior Protection or Fury? One look at the frames tells you.
+- Each member's spec shows a few seconds after they join, even when they're far away. A full raid takes about a minute.
 - A grey question mark marks a member whose talents haven't been read yet.
 
-### On the party frames
+### On party and raid frames
 - **Spec icon:** the talent tree's own icon, as in the talent window.
-- Works on both kinds of party frames: beside the standard ones, and inside the raid-style ones, which show your own spec too.
-- You pick which side of a standard frame the icon goes on, and how big it is.
+- **Party frames, both kinds:** beside the standard ones, and inside the raid-style ones, which show your own spec too.
+- **Raid frames:** inside each member's frame, with groups kept together or combined.
+- You pick which side of a standard party frame the icon goes on, and how big it is.
 
 ### On tooltips
-- Hover any player, in your party or not, and their tooltip gets a line with the spec's name and the points in each tree, like "Talents: Fury (5/41/5)".
-- Size up a stranger before you invite them, or spot a hybrid build.
-- For players outside your party, the line shows a moment after the mouse settles on them. Targeting them works too.
+- Hover any player, in your group or not, and their tooltip gets a line with the spec's name and the points in each tree, like "Talents: Fury (5/41/5)".
+- Size up a stranger before you invite them.
+- For players outside your group, the line shows a moment after the mouse settles on them.
 - Each can be turned off.
 
 ### Stays up to date
-- Talents are read again about once a minute and on every ready check, so a respec or a switch to a second spec shows soon after.
+- Talents are read again about once a minute in a party, every five minutes in a raid, and on every ready check, so a respec shows soon after.
 - A spec stays on the frame when the member goes offline, and after you reload.
 
 ### Good to know
-- **/ayt** opens the options. **/ayt list** writes your party's specs in chat.
+- **/ayt** opens the options. **/ayt list** writes your group's specs in chat.
 - Talents are read while you're out of combat. Someone who joins mid-fight gets their icon when it ends.
 - A member with no talent points spent gets no icon. With the same points in two trees, the first one shows.
 - Players the game doesn't let you inspect get no tooltip line.
-- The icons are for parties: raid frames aren't covered.
 
 This addon was made with AI.
 
@@ -68,11 +68,11 @@ This addon was made with AI.
 
 ## B. Upload File form
 
-**File:** `dist\AreYouTalented-1.1.0.zip`
+**File:** `dist\AreYouTalented-1.2.0.zip`
 
 **Display name**
 ```
-Are You Talented? 1.1.0
+Are You Talented? 1.2.0
 ```
 
 **Release type:** `Release`
@@ -81,6 +81,11 @@ Are You Talented? 1.1.0
 
 **Changelog** (paste only the newest part; paste older parts too if they never went up)
 ```markdown
+1.2.0
+- Now works in raids: each raid member's spec icon shows on their raid frame, whether you keep groups together or combine them.
+- In a raid, everyone's talents are read within about a minute, then again every five minutes and on every ready check.
+- Two options are renamed to match: **Show specs on party and raid frames** and **Players outside your group too**.
+
 1.1.0
 - Player tooltips now show the spec of any player you point at or target, not only your party members. The line appears a moment after the mouse settles on them, while you're out of combat.
 - New option: **Players outside your party too**, on by default. Turn it off to keep the tooltip line to your party.

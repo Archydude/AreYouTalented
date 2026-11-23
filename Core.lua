@@ -1,12 +1,12 @@
 -- Are You Talented?
--- Shows each party member's talent spec on the party frames: the talent tree they put the most
+-- Shows each party or raid member's talent spec on their frame: the talent tree they put the most
 -- points in. WoW Forever only: there a class has one talent tree with three groups (a warrior's
 -- Arms, Fury and Protection), and the group with the most points is what players call the spec.
 --
 -- Files, in load order (see the .toc):
 --   Core.lua      namespace, saved settings, slash command
---   Talents.lua   reading talents: the player's own, and party members' by inspecting them
---   Badges.lua    the spec icon on the party frames
+--   Talents.lua   reading talents: the player's own, and group members' by inspecting them
+--   Badges.lua    the spec icon on the party and raid frames
 --   Tooltip.lua   the spec line on player tooltips
 --   Options.lua   Esc > Options > AddOns > Are You Talented?
 
@@ -31,7 +31,7 @@ end
 ---------------------------------------------------------------------------
 
 ns.DEFAULTS = {
-	frames = true,     -- the spec icon on the party frames
+	frames = true,     -- the spec icon on the party and raid frames
 	side = "right",    -- which side of a party frame the icon goes on: "right" | "left"
 	size = 22,         -- the icon's size
 	tooltip = true,    -- a spec line on player tooltips
@@ -96,15 +96,15 @@ end)
 local function help()
 	ns.Print("commands:")
 	print("  /ayt - options")
-	print("  /ayt list - your party's specs, in chat")
+	print("  /ayt list - your party's or raid's specs, in chat")
 	print("  /ayt refresh - read everyone's talents again now")
 	print("  /ayt debug - say in chat what is read and when, to track down a problem; again to stop")
 end
 
--- One chat line per party member, the player first.
+-- One chat line per party or raid member, the player first.
 local function list()
 	local units = ns.Talents.Units(true)
-	ns.Print(#units > 1 and "your party:" or "you:")
+	ns.Print(#units > 1 and "your group:" or "you:")
 	for _, unit in ipairs(units) do
 		local name = ns.Plain(UnitName(unit)) or unit
 		local spec = ns.Talents.SpecOf(ns.Plain(UnitGUID(unit)))
@@ -132,7 +132,7 @@ SlashCmdList.AREYOUTALENTED = function(msg)
 		list()
 	elseif command == "refresh" then
 		ns.Talents.Recheck()
-		ns.Print("reading your party's talents again.")
+		ns.Print("reading your group's talents again.")
 	elseif command == "debug" then
 		ns.debug = not ns.debug
 		ns.Print(ns.debug and "saying what is read, until you type /ayt debug again or reload." or "no longer saying what is read.")

@@ -1,6 +1,6 @@
 -- Are You Talented?: reading talents
--- The player's own talents are read directly. A party member's are read by inspecting them, one
--- member at a time, out of combat. So are those of any other player the mouse is on or who is
+-- The player's own talents are read directly. A party or raid member's are read by inspecting
+-- them, one member at a time, out of combat. So are those of any other player the mouse is on or who is
 -- targeted, for their tooltip. What was read is kept (ns.db.seen) so it still shows when the
 -- member is offline, and right after a reload or a login.
 --
@@ -19,7 +19,9 @@ local INSPECT_CONFIG = Constants and Constants.TraitConsts and Constants.TraitCo
 
 local TICK = 1.5      -- seconds between looks at the party: at most one inspect request per look
 local TIMEOUT = 4     -- seconds to wait for an inspect answer before asking for someone else's
-local RECHECK = 60    -- seconds before a member's talents are read again, to catch a respec
+local RECHECK = 60    -- seconds before a party member's talents are read again, to catch a respec
+local RAID_RECHECK = 300 -- the same in a raid, where there are many more members to get through
+local RAID_SIZE = 40
 local RETRY = 10      -- seconds before asking again about a member who didn't answer
 local OTHER_RECHECK = 300 -- seconds before a player outside the party is read again
 local HOVER_DELAY = 0.3   -- seconds the mouse has to stay on a player before their talents are asked for
@@ -115,20 +117,29 @@ function Talents.SpecOf(guid)
 end
 
 ---------------------------------------------------------------------------
--- The party
+-- The group: a party or a raid
 ---------------------------------------------------------------------------
 
--- The party's unit tokens. Raids are left alone: only party frames show specs.
+-- The unit tokens of the other members of the player's party or raid, after "player" when asked for.
 function Talents.Units(withPlayer)
 	local units = {}
 	if withPlayer then units[1] = "player" end
-	if IsInGroup() and not IsInRaid() then
+	if IsInRaid() then
+		for i = 1, RAID_SIZE do
+			local unit = "raid" .. i
+			if UnitExists(unit) and not UnitIsUnit(unit, "player") then units[#units + 1] = unit end
+		end
+	elseif IsInGroup() then
 		for i = 1, MAX_PARTY_MEMBERS or 4 do
 			local unit = "party" .. i
 			if UnitExists(unit) then units[#units + 1] = unit end
 		end
 	end
 	return units
+end
+
+local function recheckAfter()
+	return IsInRaid() and RAID_RECHECK or RECHECK
 end
 
 local function inParty(guid)
@@ -221,10 +232,11 @@ local function tick()
 		note("no answer in %d seconds", TIMEOUT)
 		pending = nil
 	end
+	local recheck = recheckAfter()
 	for _, unit in ipairs(Talents.Units()) do
 		local guid = ns.Plain(UnitGUID(unit))
 		if type(guid) == "string" and UnitIsConnected(unit)
-			and (not checked[guid] or now - checked[guid] >= RECHECK)
+			and (not checked[guid] or now - checked[guid] >= recheck)
 			and (not tried[guid] or now - tried[guid] >= RETRY)
 			and CanInspect(unit, false) then
 			request(unit, guid, now)
@@ -279,7 +291,7 @@ local function consider(unit)
 	local guid = ns.Plain(UnitGUID(unit))
 	if type(guid) ~= "string" then return end
 	local now = GetTime()
-	if checked[guid] and now - checked[guid] < (inParty(guid) and RECHECK or OTHER_RECHECK) then return end
+	if checked[guid] and now - checked[guid] < (inParty(guid) and recheckAfter() or OTHER_RECHECK) then return end
 	if tried[guid] and now - tried[guid] < RETRY then return end
 	wantOther = { guid = guid, unit = unit }
 	if not otherQueued then
@@ -328,9 +340,9 @@ end
 
 local ticker
 
--- Looks at the party only while there is one.
+-- Looks at the party or raid only while there is one.
 local function sync()
-	local inGroup = IsInGroup() and not IsInRaid()
+	local inGroup = IsInGroup()
 	if inGroup and not ticker then
 		ticker = C_Timer.NewTicker(TICK, tick)
 	elseif not inGroup and ticker then

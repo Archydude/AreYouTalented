@@ -2,10 +2,15 @@
 ArchdudeWhatsNew:Register("AreYouTalented", {
 	title = "Are You Talented?",
 	icon = "Interface\\Icons\\Ability_Marksmanship",
-	version = "1.1.0",
+	version = "1.2.0",
 	seen = "AreYouTalentedWhatsNew",
 	saved = { "AreYouTalentedDB" },
 	changes = {
+		{ "1.2.0",
+			"Now works in raids: each raid member's spec icon shows on their raid frame, whether you keep groups together or combine them.",
+			"In a raid, everyone's talents are read within about a minute, then again every five minutes and on every ready check.",
+			"Two options are renamed to match: |cffffd100Show specs on party and raid frames|r and |cffffd100Players outside your group too|r.",
+		},
 		{ "1.1.0",
 			"Player tooltips now show the spec of any player you point at or target, not only your party members. The line appears a moment after the mouse settles on them, while you're out of combat.",
 			"New option: |cffffd100Players outside your party too|r, on by default. Turn it off to keep the tooltip line to your party.",

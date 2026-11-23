@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+- Now works in raids: each raid member's spec icon shows on their raid frame, whether you keep groups together or combine them.
+- In a raid, everyone's talents are read within about a minute, then again every five minutes and on every ready check.
+- Two options are renamed to match: **Show specs on party and raid frames** and **Players outside your group too**.
+
 ## 1.1.0
 - Player tooltips now show the spec of any player you point at or target, not only your party members. The line appears a moment after the mouse settles on them, while you're out of combat.
 - New option: **Players outside your party too**, on by default. Turn it off to keep the tooltip line to your party.
