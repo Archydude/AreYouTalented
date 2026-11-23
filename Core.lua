@@ -33,7 +33,7 @@ end
 ns.DEFAULTS = {
 	frames = true,     -- the spec icon on the party and raid frames
 	side = "right",    -- which side of a party frame the icon goes on: "right" | "left"
-	size = 22,         -- the icon's size
+	size = 22,         -- the icon's size beside a standard party frame; inside other frames, its share of the frame (see Badges.lua)
 	tooltip = true,    -- a spec line on player tooltips
 	others = true,     -- also read players outside the party: whoever the mouse is on, and the target
 	seen = {},         -- [player GUID] = { tree = trait tree ID, spent = { [group ID] = points }, at = time() }

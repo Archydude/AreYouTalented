@@ -11,9 +11,11 @@ local _, ns = ...
 -- Shown while a member's talents haven't been read yet.
 local UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 
-local MIN_SIZE = 10
--- On raid-style frames the icon sits inside the frame, so it takes at most this much of its height.
-local COMPACT_HEIGHT_SHARE = 0.45
+local MIN_SIZE = 8
+-- On raid frames and raid-style party frames the icon sits inside the frame and is sized from
+-- the frame's height, so it stays in proportion whatever size the player gave the frames. It
+-- takes this much of the height at the default Icon size and above; a smaller setting shrinks it.
+local COMPACT_HEIGHT_SHARE = 0.35
 
 local badges = setmetatable({}, { __mode = "k" }) -- party frame -> its badge
 
@@ -40,7 +42,8 @@ local function place(badge, frame, compact)
 	local size = db.size
 	if compact then
 		local height = frame:GetHeight() or 0
-		size = math.max(MIN_SIZE, math.min(size, math.floor(height * COMPACT_HEIGHT_SHARE + 0.5)))
+		local share = COMPACT_HEIGHT_SHARE * math.min(1, size / ns.DEFAULTS.size)
+		size = math.max(MIN_SIZE, math.floor(height * share + 0.5))
 	end
 	local placed = (compact and "c" or db.side) .. size
 	if badge.placed == placed then return end

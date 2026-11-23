@@ -15,7 +15,7 @@ Esc > Options > AddOns > Are You Talented?, or type `/ayt`:
 
 - **Show specs on party and raid frames**: the icons, on or off.
 - **Icon side**: right or left of a standard party frame.
-- **Icon size**: how big the icon is.
+- **Icon size**: how big the icon is beside a standard party frame. Inside raid frames and raid-style party frames the icon follows the frame's size, and a smaller setting shrinks it.
 - **Show specs on player tooltips**: the tooltip line, on or off.
 - **Players outside your group too**: the tooltip line for any player you point at or target. On by default; turn it off to keep the line to your party or raid.
 
@@ -34,7 +34,7 @@ Esc > Options > AddOns > Are You Talented?, or type `/ayt`:
 - Players the game doesn't let you inspect get no tooltip line.
 - A member with no talent points spent gets no icon.
 - A member with the same points in two trees shows the first of them.
-- On raid frames and raid-style party frames the icon is always inside the frame, at its right edge, and shrinks to fit.
+- On raid frames and raid-style party frames the icon is always inside the frame, at its right edge, and about a third of the frame's height, so it grows and shrinks with your frames.
 
 Works on **WoW Forever**.
 

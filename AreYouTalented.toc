@@ -2,7 +2,7 @@
 ## Title: Are You Talented?
 ## Notes: Shows each party and raid member's talent spec on their frame, as the icon of the talent tree they put the most points in. Player tooltips show the spec too. Type /ayt.
 ## Author: Archdude
-## Version: 1.2.0
+## Version: 1.2.1
 ## SavedVariables: AreYouTalentedDB, AreYouTalentedWhatsNew
 ## IconTexture: Interface\Icons\Ability_Marksmanship
 ## Category-enUS: Unit Frames

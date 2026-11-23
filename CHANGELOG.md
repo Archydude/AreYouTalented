@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.1
+- The spec icon on raid frames and raid-style party frames now sizes itself from the frame: about a third of its height, so it stays in proportion whatever size your frames are. A smaller **Icon size** shrinks it.
+
 ## 1.2.0
 - Now works in raids: each raid member's spec icon shows on their raid frame, whether you keep groups together or combine them.
 - In a raid, everyone's talents are read within about a minute, then again every five minutes and on every ready check.

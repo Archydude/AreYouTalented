@@ -75,7 +75,7 @@ function ns.CreateOptions()
 		return tostring(math.floor(value + 0.5))
 	end)
 	control("Slider", setting("size", VarType.Number, "Icon size"), sizeOptions,
-		"How big the icon is. Raid frames and raid-style party frames shrink it to fit inside the frame.")
+		"How big the icon is. On raid frames and raid-style party frames the icon grows and shrinks with the frame, up to about a third of its height; a smaller size here shrinks it.")
 	checkbox("tooltip", "Show specs on player tooltips",
 		"Add a line like \"Talents: Fury (5/41/5)\" to the tooltip of a player whose talents were read: your party or raid members, and you.")
 	checkbox("others", "Players outside your group too",
