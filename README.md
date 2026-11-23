@@ -6,7 +6,7 @@ Each party frame gets a small icon of the talent tree that member put the most p
 
 - **No inspecting and no clicking**: each member's spec shows by itself a few seconds after they join.
 - **Both kinds of party frames**: the standard ones, with the icon beside the frame, and the raid-style ones, with the icon inside the frame. Raid-style party frames show your own spec too.
-- **Player tooltips**: hover a party member and the tooltip has a line with their spec's name and the points in each tree, like `Talents: Fury (5/41/5)`.
+- **Player tooltips**: hover any player, in your party or not, and the tooltip has a line with their spec's name and the points in each tree, like `Talents: Fury (5/41/5)`.
 
 ## Options
 
@@ -16,6 +16,7 @@ Esc > Options > AddOns > Are You Talented?, or type `/ayt`:
 - **Icon side**: right or left of the party frame.
 - **Icon size**: how big the icon is.
 - **Show specs on player tooltips**: the tooltip line, on or off.
+- **Players outside your party too**: the tooltip line for any player you point at or target. On by default; turn it off to keep the line to your party.
 
 ## Commands
 
@@ -28,10 +29,12 @@ Esc > Options > AddOns > Are You Talented?, or type `/ayt`:
 - A member's talents are read a few seconds after they join, wherever they are, once you're out of combat. Until then their frame shows a grey question mark.
 - A spec that was read stays on the frame when the member goes offline, and after you reload or log back in.
 - Talents are read again about once a minute, and on every ready check, so a respec or a switch to a second spec shows soon after.
+- A player outside your party is read a moment after the mouse settles on them, or after you target them, while you're out of combat. The line then shows on the tooltip you're looking at.
+- Players the game doesn't let you inspect get no tooltip line.
 - A member with no talent points spent gets no icon.
 - A member with the same points in two trees shows the first of them.
 - On raid-style party frames the icon is always inside the frame, at its right edge, and shrinks to fit.
-- Parties only: raids aren't covered.
+- The icons are for parties: raid frames aren't covered.
 
 Works on **WoW Forever**.
 

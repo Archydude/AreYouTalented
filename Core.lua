@@ -35,12 +35,15 @@ ns.DEFAULTS = {
 	side = "right",    -- which side of a party frame the icon goes on: "right" | "left"
 	size = 22,         -- the icon's size
 	tooltip = true,    -- a spec line on player tooltips
+	others = true,     -- also read players outside the party: whoever the mouse is on, and the target
 	seen = {},         -- [player GUID] = { tree = trait tree ID, spent = { [group ID] = points }, at = time() }
 }
 
 -- How long a player's talents are remembered after they were last read, so party members who are
 -- offline, or not read again yet after a reload or a login, still show their spec.
 local KEEP_SECONDS = 3 * 24 * 60 * 60
+-- The most players remembered. With players outside the party read too, a busy city adds many.
+local KEEP_PLAYERS = 2000
 
 local function validSeen(entry, now)
 	return type(entry) == "table" and type(entry.tree) == "number" and type(entry.spent) == "table"
@@ -60,8 +63,18 @@ local function load()
 	end
 	if saved.side ~= "left" then saved.side = "right" end
 	local now = time()
+	local kept = {}
 	for guid, entry in pairs(saved.seen) do
-		if type(guid) ~= "string" or not validSeen(entry, now) then saved.seen[guid] = nil end
+		if type(guid) ~= "string" or not validSeen(entry, now) then
+			saved.seen[guid] = nil
+		else
+			kept[#kept + 1] = guid
+		end
+	end
+	-- Over the limit: the ones read longest ago go.
+	if #kept > KEEP_PLAYERS then
+		table.sort(kept, function(a, b) return saved.seen[a].at > saved.seen[b].at end)
+		for i = KEEP_PLAYERS + 1, #kept do saved.seen[kept[i]] = nil end
 	end
 	ns.db = saved
 end

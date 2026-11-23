@@ -13,7 +13,7 @@ Are You Talented?
 
 **Summary**
 ```
-Shows each party member's talent spec on the party frames, as the icon of the talent tree they put the most points in. No inspecting, no clicking. For WoW Forever.
+Shows each party member's talent spec on the party frames, as the icon of the talent tree they put the most points in, and any player's spec on their tooltip. No inspecting, no clicking. For WoW Forever.
 ```
 
 **Main category:** `Unit Frames`
@@ -37,23 +37,26 @@ Are You Talented? puts each party member's spec right on their party frame: the 
 - A grey question mark marks a member whose talents haven't been read yet.
 
 ### On the party frames
-- **Spec icon:** the talent tree's own icon, as in the talent window, so you recognize it at once.
-- Works on both kinds of party frames. The standard frames get the icon beside them. Raid-style party frames get the icon inside the frame, and show your own spec too.
+- **Spec icon:** the talent tree's own icon, as in the talent window.
+- Works on both kinds of party frames: beside the standard ones, and inside the raid-style ones, which show your own spec too.
 - You pick which side of a standard frame the icon goes on, and how big it is.
-- The icon never gets in the way of clicking a party frame.
 
 ### On tooltips
-Hover a party member and their tooltip gets a line with the spec's name and the points in each tree, like "Talents: Fury (5/41/5)". Handy for spotting a hybrid build. You can turn it off.
+- Hover any player, in your party or not, and their tooltip gets a line with the spec's name and the points in each tree, like "Talents: Fury (5/41/5)".
+- Size up a stranger before you invite them, or spot a hybrid build.
+- For players outside your party, the line shows a moment after the mouse settles on them. Targeting them works too.
+- Each can be turned off.
 
 ### Stays up to date
 - Talents are read again about once a minute and on every ready check, so a respec or a switch to a second spec shows soon after.
-- A spec stays on the frame when the member goes offline, and after you reload or log back in.
+- A spec stays on the frame when the member goes offline, and after you reload.
 
 ### Good to know
 - **/ayt** opens the options. **/ayt list** writes your party's specs in chat.
 - Talents are read while you're out of combat. Someone who joins mid-fight gets their icon when it ends.
 - A member with no talent points spent gets no icon. With the same points in two trees, the first one shows.
-- Parties only: raids aren't covered.
+- Players the game doesn't let you inspect get no tooltip line.
+- The icons are for parties: raid frames aren't covered.
 
 This addon was made with AI.
 
@@ -65,11 +68,11 @@ This addon was made with AI.
 
 ## B. Upload File form
 
-**File:** `dist\AreYouTalented-1.0.1.zip`
+**File:** `dist\AreYouTalented-1.1.0.zip`
 
 **Display name**
 ```
-Are You Talented? 1.0.1
+Are You Talented? 1.1.0
 ```
 
 **Release type:** `Release`
@@ -78,6 +81,10 @@ Are You Talented? 1.0.1
 
 **Changelog** (paste only the newest part; paste older parts too if they never went up)
 ```markdown
+1.1.0
+- Player tooltips now show the spec of any player you point at or target, not only your party members. The line appears a moment after the mouse settles on them, while you're out of combat.
+- New option: **Players outside your party too**, on by default. Turn it off to keep the tooltip line to your party.
+
 1.0.1
 - The spec's name and the talent points no longer show next to the icon on party frames: the icon alone tells the spec. The member's tooltip still has the name and the points. The two options for them are gone.
 

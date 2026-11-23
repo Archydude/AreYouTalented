@@ -78,6 +78,9 @@ function ns.CreateOptions()
 		"How big the icon is. Raid-style party frames shrink it to fit inside the frame.")
 	checkbox("tooltip", "Show specs on player tooltips",
 		"Add a line like \"Talents: Fury (5/41/5)\" to the tooltip of a player whose talents were read: your party members, and you.")
+	checkbox("others", "Players outside your party too",
+		"Also read the talents of any player you point at or target, so their tooltip gets the line too. "
+			.. "It shows a moment after the mouse settles on them, while you're out of combat. Needs Show specs on player tooltips.")
 
 	Settings.RegisterAddOnCategory(category)
 end

@@ -1,6 +1,7 @@
 -- Are You Talented?: reading talents
 -- The player's own talents are read directly. A party member's are read by inspecting them, one
--- member at a time, out of combat; what was read is kept (ns.db.seen) so it still shows when the
+-- member at a time, out of combat. So are those of any other player the mouse is on or who is
+-- targeted, for their tooltip. What was read is kept (ns.db.seen) so it still shows when the
 -- member is offline, and right after a reload or a login.
 --
 -- WoW Forever lets a player be inspected from any distance, so there is no range check.
@@ -20,6 +21,9 @@ local TICK = 1.5      -- seconds between looks at the party: at most one inspect
 local TIMEOUT = 4     -- seconds to wait for an inspect answer before asking for someone else's
 local RECHECK = 60    -- seconds before a member's talents are read again, to catch a respec
 local RETRY = 10      -- seconds before asking again about a member who didn't answer
+local OTHER_RECHECK = 300 -- seconds before a player outside the party is read again
+local HOVER_DELAY = 0.3   -- seconds the mouse has to stay on a player before their talents are asked for
+local GAP = 1             -- seconds between two requests, at least
 
 local pending         -- the request waiting for its answer: { guid = , sent = GetTime() }
 
@@ -29,6 +33,7 @@ local function note(...)
 end
 local checked = {}    -- [guid] = GetTime() of the last answer
 local tried = {}      -- [guid] = GetTime() of the last request
+local lastSent = 0    -- GetTime() of the last request to anyone
 
 ---------------------------------------------------------------------------
 -- Trees and points
@@ -199,6 +204,14 @@ local function playerInspecting()
 	return spells and spells:IsShown() and spells.IsInspecting and spells:IsInspecting() and true or false
 end
 
+local function request(unit, guid, now)
+	tried[guid] = now
+	lastSent = now
+	pending = { guid = guid, sent = now }
+	note("asking for %s's talents", tostring(ns.Plain(UnitName(unit)) or unit))
+	NotifyInspect(unit)
+end
+
 local function tick()
 	ns.Refresh()
 	if not wanted() or InCombatLockdown() or playerInspecting() then return end
@@ -214,22 +227,75 @@ local function tick()
 			and (not checked[guid] or now - checked[guid] >= RECHECK)
 			and (not tried[guid] or now - tried[guid] >= RETRY)
 			and CanInspect(unit, false) then
-			tried[guid] = now
-			pending = { guid = guid, sent = now }
-			note("asking for %s's talents", tostring(ns.Plain(UnitName(unit)) or unit))
-			NotifyInspect(unit)
+			request(unit, guid, now)
 			return
 		end
 	end
 end
 
--- The game has a player's inspect data: ours to read when they're in the party, whoever asked.
+---------------------------------------------------------------------------
+-- Other players: whoever the mouse is on, and the target
+---------------------------------------------------------------------------
+
+local function othersWanted()
+	return ns.db.tooltip and ns.db.others
+end
+
+local wantOther           -- the player to ask about next: { guid = , unit = "mouseover" or "target" }
+local otherQueued = false -- whether a look at wantOther is on its way
+
+local function tryOther()
+	otherQueued = false
+	local want = wantOther
+	if not want then return end
+	-- Not any more: the option went off, a fight started, or the mouse or target moved on.
+	if not othersWanted() or InCombatLockdown() or ns.Plain(UnitGUID(want.unit)) ~= want.guid then
+		wantOther = nil
+		return
+	end
+	local now = GetTime()
+	local wait = 0
+	if playerInspecting() then
+		wait = 1
+	elseif pending and now - pending.sent < TIMEOUT then
+		wait = 0.5
+	elseif now - lastSent < GAP then
+		wait = GAP - (now - lastSent)
+	end
+	if wait > 0 then
+		otherQueued = true
+		C_Timer.After(wait + 0.05, tryOther)
+		return
+	end
+	wantOther = nil
+	if CanInspect(want.unit, false) then request(want.unit, want.guid, now) end
+end
+
+-- The mouse went onto a unit, or the target changed: a player whose talents aren't known, or
+-- were read a while ago, gets asked about once the mouse has stayed a moment.
+local function consider(unit)
+	if not othersWanted() or InCombatLockdown() then return end
+	if not UnitIsPlayer(unit) or UnitIsUnit(unit, "player") then return end
+	local guid = ns.Plain(UnitGUID(unit))
+	if type(guid) ~= "string" then return end
+	local now = GetTime()
+	if checked[guid] and now - checked[guid] < (inParty(guid) and RECHECK or OTHER_RECHECK) then return end
+	if tried[guid] and now - tried[guid] < RETRY then return end
+	wantOther = { guid = guid, unit = unit }
+	if not otherQueued then
+		otherQueued = true
+		C_Timer.After(HOVER_DELAY, tryOther)
+	end
+end
+
+-- The game has a player's inspect data: ours to read whoever asked for it, when they're in the
+-- party or other players' talents are wanted too.
 local function onInspectReady(guid)
 	guid = ns.Plain(guid)
 	if type(guid) ~= "string" then return end
 	local ours = pending and pending.guid == guid
 	if ours then pending = nil end
-	if not ours and not inParty(guid) then return end
+	if not ours and not inParty(guid) and not othersWanted() then return end
 	-- The answer can come without talents in it; then the game still holds the talents of whoever
 	-- was inspected before, and those aren't this player's.
 	if C_Traits.HasValidInspectData and not C_Traits.HasValidInspectData() then
@@ -246,6 +312,7 @@ local function onInspectReady(guid)
 	local spec = Talents.SpecOf(guid)
 	note("read talents: %s", spec and (spec.name .. " " .. spec.points) or "no points spent")
 	ns.Refresh()
+	ns.TooltipRead(guid)
 end
 
 -- Reads everyone's talents again as soon as they can be.
@@ -287,6 +354,8 @@ function Talents.Start()
 	frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 	frame:RegisterEvent("INSPECT_READY")
 	frame:RegisterEvent("READY_CHECK")
+	frame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+	frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	for _, event in ipairs(OWN_EVENTS) do
 		own[event] = pcall(frame.RegisterEvent, frame, event)
 	end
@@ -295,6 +364,10 @@ function Talents.Start()
 			onInspectReady(...)
 		elseif event == "READY_CHECK" then
 			wipe(checked)
+		elseif event == "UPDATE_MOUSEOVER_UNIT" then
+			consider("mouseover")
+		elseif event == "PLAYER_TARGET_CHANGED" then
+			consider("target")
 		elseif own[event] then
 			readOwnSoon()
 		else

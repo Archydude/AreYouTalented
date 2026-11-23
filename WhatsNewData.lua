@@ -2,10 +2,14 @@
 ArchdudeWhatsNew:Register("AreYouTalented", {
 	title = "Are You Talented?",
 	icon = "Interface\\Icons\\Ability_Marksmanship",
-	version = "1.0.1",
+	version = "1.1.0",
 	seen = "AreYouTalentedWhatsNew",
 	saved = { "AreYouTalentedDB" },
 	changes = {
+		{ "1.1.0",
+			"Player tooltips now show the spec of any player you point at or target, not only your party members. The line appears a moment after the mouse settles on them, while you're out of combat.",
+			"New option: |cffffd100Players outside your party too|r, on by default. Turn it off to keep the tooltip line to your party.",
+		},
 		{ "1.0.1",
 			"The spec's name and the talent points no longer show next to the icon on party frames: the icon alone tells the spec. The member's tooltip still has the name and the points. The two options for them are gone.",
 		},
