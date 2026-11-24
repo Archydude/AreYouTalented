@@ -43,7 +43,7 @@ Are You Talented? puts each party and raid member's spec right on their frame: t
 - You pick which side of a standard party frame the icon goes on, and how big it is.
 
 ### On tooltips
-- Hover any player, in your group or not, and their tooltip gets a line with the spec's name and the points in each tree, like "Talents: Fury (5/41/5)".
+- Hover any player, in your group or not, to see their spec's **icon, name and talent points**, like "Fury (5/41/5)".
 - Size up a stranger before you invite them.
 - For players outside your group, the line shows a moment after the mouse settles on them.
 - Each can be turned off.
@@ -53,7 +53,7 @@ Are You Talented? puts each party and raid member's spec right on their frame: t
 - A spec stays on the frame when the member goes offline, and after you reload.
 
 ### Good to know
-- **/ayt** opens the options. **/ayt list** writes your group's specs in chat.
+- **/ayt** opens options. **/ayt list** prints a group spec **Summary** count plus each member's spec in chat.
 - Talents are read while you're out of combat. Someone who joins mid-fight gets their icon when it ends.
 - A member with no talent points spent gets no icon. With the same points in two trees, the first one shows.
 - Players the game doesn't let you inspect get no tooltip line.
@@ -68,11 +68,11 @@ This addon was made with AI.
 
 ## B. Upload File form
 
-**File:** `dist\AreYouTalented-1.2.1.zip`
+**File:** `dist\AreYouTalented-1.3.0.zip`
 
 **Display name**
 ```
-Are You Talented? 1.2.1
+Are You Talented? 1.3.0
 ```
 
 **Release type:** `Release`
@@ -81,6 +81,11 @@ Are You Talented? 1.2.1
 
 **Changelog** (paste only the newest part; paste older parts too if they never went up)
 ```markdown
+1.3.0
+- **Spec icon on tooltips:** player tooltips now show the spec's icon next to its name and talent point breakdown.
+- **Group summary in `/ayt list`:** listing your party or raid now starts with a count of each spec in the group, like `Summary: 2 Fury · 1 Arms`.
+- Fixed: failed talent checks retry promptly instead of waiting 5 minutes, brushing your mouse over another player no longer overrides your current target's check, and a player's tooltip updates live if they respec while you're hovering them.
+
 1.2.1
 - The spec icon on raid frames and raid-style party frames now sizes itself from the frame: about a third of its height, so it stays in proportion whatever size your frames are. A smaller **Icon size** shrinks it.
 

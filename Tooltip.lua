@@ -9,7 +9,12 @@ local lineText -- the spec text shown on that line, so a respec updates it
 
 local function specText(guid)
 	local spec = ns.Talents.SpecOf(guid)
-	return spec and ("%s (%s)"):format(spec.name, spec.points) or nil
+	if not spec then return nil end
+	local text = ("%s (%s)"):format(spec.name, spec.points)
+	if spec.icon and spec.icon ~= 0 and spec.icon ~= "" then
+		text = "|T" .. tostring(spec.icon) .. ":14:14:0:0:64:64:4:60:4:60|t " .. text
+	end
+	return text
 end
 
 local function addLine(tooltip, guid)

@@ -2,10 +2,15 @@
 ArchdudeWhatsNew:Register("AreYouTalented", {
 	title = "Are You Talented?",
 	icon = "Interface\\Icons\\Ability_Marksmanship",
-	version = "1.2.1",
+	version = "1.3.0",
 	seen = "AreYouTalentedWhatsNew",
 	saved = { "AreYouTalentedDB" },
 	changes = {
+		{ "1.3.0",
+			"|cffffd100Spec icon on tooltips:|r player tooltips now show the spec's icon next to its name and talent point breakdown.",
+			"|cffffd100Group summary in |cffffd100/ayt list|r:|r listing your party or raid now starts with a count of each spec in the group, like |cffffd100Summary: 2 Fury · 1 Arms|r.",
+			"Fixed: failed talent checks retry promptly instead of waiting 5 minutes, brushing your mouse over another player no longer overrides your current target's check, and a player's tooltip updates live if they respec while you're hovering them.",
+		},
 		{ "1.2.1",
 			"The spec icon on raid frames and raid-style party frames now sizes itself from the frame: about a third of its height, so it stays in proportion whatever size your frames are. A smaller |cffffd100Icon size|r shrinks it.",
 		},

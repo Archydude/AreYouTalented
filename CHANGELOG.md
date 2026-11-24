@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+- **Spec icon on tooltips:** player tooltips now show the spec's icon next to its name and talent point breakdown.
+- **Group summary in `/ayt list`:** listing your party or raid now starts with a count of each spec in the group, like `Summary: 2 Fury · 1 Arms`.
+- Fixed: failed talent checks retry promptly instead of waiting 5 minutes, brushing your mouse over another player no longer overrides your current target's check, and a player's tooltip updates live if they respec while you're hovering them.
+
 ## 1.2.1
 - The spec icon on raid frames and raid-style party frames now sizes itself from the frame: about a third of its height, so it stays in proportion whatever size your frames are. A smaller **Icon size** shrinks it.
 

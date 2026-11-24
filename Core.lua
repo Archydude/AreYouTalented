@@ -104,13 +104,14 @@ end
 -- One chat line per party or raid member, the player first.
 local function list()
 	local units = ns.Talents.Units(true)
-	ns.Print(#units > 1 and "your group:" or "you:")
-	for _, unit in ipairs(units) do
+	local counts, rows = {}, {}
+	for i, unit in ipairs(units) do
 		local name = ns.Plain(UnitName(unit)) or unit
 		local spec = ns.Talents.SpecOf(ns.Plain(UnitGUID(unit)))
 		local text
 		if spec then
 			text = ("%s (%s)"):format(spec.name, spec.points)
+			counts[spec.name] = (counts[spec.name] or 0) + 1
 		elseif spec == false then
 			text = "no talent points spent"
 		elseif UnitIsConnected(unit) then
@@ -118,7 +119,26 @@ local function list()
 		else
 			text = "offline"
 		end
-		print(("  %s: %s"):format(name, text))
+		rows[i] = { name = name, text = text }
+	end
+	ns.Print(#units > 1 and "your group:" or "you:")
+	if #units > 1 and next(counts) then
+		local summary = {}
+		for specName, count in pairs(counts) do
+			summary[#summary + 1] = { name = specName, count = count }
+		end
+		table.sort(summary, function(a, b)
+			if a.count ~= b.count then return a.count > b.count end
+			return a.name < b.name
+		end)
+		local parts = {}
+		for i, entry in ipairs(summary) do
+			parts[i] = ("%d %s"):format(entry.count, entry.name)
+		end
+		print("  Summary: " .. table.concat(parts, " · "))
+	end
+	for _, row in ipairs(rows) do
+		print(("  %s: %s"):format(row.name, row.text))
 	end
 end
 
