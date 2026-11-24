@@ -36,6 +36,15 @@ end
 local checked = {}    -- [guid] = GetTime() of the last answer
 local tried = {}      -- [guid] = GetTime() of the last request
 local lastSent = 0    -- GetTime() of the last request to anyone
+local whyNot = {}     -- [guid] = why the last try to read them came to nothing (a key of WHY_NOT)
+
+-- For /ayt list, after "not read yet: ".
+local WHY_NOT = {
+	refused = "the game won't let you inspect them from where you are",
+	silent = "the game didn't answer",
+	empty = "the game answered without their talents",
+	unreadable = "their talents couldn't be read",
+}
 
 ---------------------------------------------------------------------------
 -- Trees and points
@@ -230,19 +239,29 @@ local function tick()
 	if pending then
 		if now - pending.sent < TIMEOUT then return end
 		note("no answer in %d seconds", TIMEOUT)
+		whyNot[pending.guid] = "silent"
 		pending = nil
 	end
+	if now - lastSent < GAP then return end
 	local recheck = recheckAfter()
 	for _, unit in ipairs(Talents.Units()) do
 		local guid = ns.Plain(UnitGUID(unit))
 		if type(guid) == "string" and UnitIsConnected(unit)
 			and (not checked[guid] or now - checked[guid] >= recheck)
-			and (not tried[guid] or now - tried[guid] >= RETRY)
-			and CanInspect(unit, false) then
-			request(unit, guid, now)
-			return
+			and (not tried[guid] or now - tried[guid] >= RETRY) then
+			if CanInspect(unit, false) then
+				request(unit, guid, now)
+				return
+			end
+			whyNot[guid] = "refused"
 		end
 	end
+end
+
+-- Why a member's talents haven't been read, in words, or nil when nothing went wrong yet.
+function Talents.WhyNot(guid)
+	if InCombatLockdown() then return "talents aren't read while you're in combat" end
+	return WHY_NOT[whyNot[guid]]
 end
 
 ---------------------------------------------------------------------------
@@ -253,18 +272,29 @@ local function othersWanted()
 	return ns.db.tooltip and ns.db.others
 end
 
-local wantOther           -- the player to ask about next: { guid = , unit = "mouseover" or "target" }
+local wantOther = {}      -- [unit ("mouseover" | "target")] = guid, so hovering doesn't clobber a queued target
 local otherQueued = false -- whether a look at wantOther is on its way
+
+local function pickWanted()
+	for _, unit in ipairs({ "mouseover", "target" }) do
+		local guid = wantOther[unit]
+		if guid then
+			if ns.Plain(UnitGUID(unit)) == guid then
+				return unit, guid
+			end
+			wantOther[unit] = nil
+		end
+	end
+end
 
 local function tryOther()
 	otherQueued = false
-	local want = wantOther
-	if not want then return end
-	-- Not any more: the option went off, a fight started, or the mouse or target moved on.
-	if not othersWanted() or InCombatLockdown() or ns.Plain(UnitGUID(want.unit)) ~= want.guid then
-		wantOther = nil
+	if not othersWanted() or InCombatLockdown() then
+		wipe(wantOther)
 		return
 	end
+	local unit, guid = pickWanted()
+	if not unit then return end
 	local now = GetTime()
 	local wait = 0
 	if playerInspecting() then
@@ -279,8 +309,12 @@ local function tryOther()
 		C_Timer.After(wait + 0.05, tryOther)
 		return
 	end
-	wantOther = nil
-	if CanInspect(want.unit, false) then request(want.unit, want.guid, now) end
+	wantOther[unit] = nil
+	if CanInspect(unit, false) then request(unit, guid, now) end
+	if next(wantOther) and not otherQueued then
+		otherQueued = true
+		C_Timer.After(GAP + 0.05, tryOther)
+	end
 end
 
 -- The mouse went onto a unit, or the target changed: a player whose talents aren't known, or
@@ -293,7 +327,7 @@ local function consider(unit)
 	local now = GetTime()
 	if checked[guid] and now - checked[guid] < (inParty(guid) and recheckAfter() or OTHER_RECHECK) then return end
 	if tried[guid] and now - tried[guid] < RETRY then return end
-	wantOther = { guid = guid, unit = unit }
+	wantOther[unit] = guid
 	if not otherQueued then
 		otherQueued = true
 		C_Timer.After(HOVER_DELAY, tryOther)
@@ -312,14 +346,17 @@ local function onInspectReady(guid)
 	-- was inspected before, and those aren't this player's.
 	if C_Traits.HasValidInspectData and not C_Traits.HasValidInspectData() then
 		note("an answer came without talents in it")
+		whyNot[guid] = "empty"
 		return
 	end
-	checked[guid] = GetTime()
 	local entry, why = read(INSPECT_CONFIG)
 	if not entry then
 		note("couldn't read the answer: %s", tostring(why))
+		whyNot[guid] = "unreadable"
 		return
 	end
+	checked[guid] = GetTime()
+	whyNot[guid] = nil
 	ns.db.seen[guid] = entry
 	local spec = Talents.SpecOf(guid)
 	note("read talents: %s", spec and (spec.name .. " " .. spec.points) or "no points spent")
@@ -331,6 +368,7 @@ end
 function Talents.Recheck()
 	wipe(checked)
 	wipe(tried)
+	wipe(whyNot)
 	readOwn()
 end
 

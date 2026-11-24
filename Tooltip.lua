@@ -4,19 +4,25 @@
 
 local _, ns = ...
 
-local lineFor -- the player whose Talents line the tooltip has now, or nil
+local lineFor  -- the player whose Talents line the tooltip has now, or nil
+local lineText -- the spec text shown on that line, so a respec updates it
+
+local function specText(guid)
+	local spec = ns.Talents.SpecOf(guid)
+	return spec and ("%s (%s)"):format(spec.name, spec.points) or nil
+end
 
 local function addLine(tooltip, guid)
-	local spec = ns.Talents.SpecOf(guid)
-	if not spec then return false end
-	tooltip:AddDoubleLine("Talents", ("%s (%s)"):format(spec.name, spec.points), 1, 0.82, 0, 1, 1, 1)
-	lineFor = guid
+	local text = specText(guid)
+	if not text then return false end
+	tooltip:AddDoubleLine("Talents", text, 1, 0.82, 0, 1, 1, 1)
+	lineFor, lineText = guid, text
 	return true
 end
 
 local function onUnit(tooltip, data)
 	if tooltip ~= GameTooltip then return end
-	lineFor = nil
+	lineFor, lineText = nil, nil
 	if not ns.db or not ns.db.tooltip then return end
 	local guid = type(data) == "table" and ns.Plain(data.guid)
 	if type(guid) == "string" then addLine(tooltip, guid) end
@@ -38,8 +44,28 @@ local function shownPlayer()
 end
 
 -- A player's talents were just read. When the tooltip is showing that player without the line,
--- it gets the line now, so the mouse doesn't have to leave and come back.
+-- or with an older spec before a respec, it updates now so the mouse doesn't have to leave.
 function ns.TooltipRead(guid)
-	if not ns.db.tooltip or lineFor == guid or shownPlayer() ~= guid then return end
+	if not ns.db.tooltip or shownPlayer() ~= guid then return end
+	if lineFor == guid then
+		local text = specText(guid)
+		if text and text ~= lineText then
+			if GameTooltip.RefreshData then
+				GameTooltip:RefreshData()
+			elseif GameTooltip.NumLines then
+				for i = 1, GameTooltip:NumLines() do
+					local left = _G["GameTooltipTextLeft" .. i]
+					local right = _G["GameTooltipTextRight" .. i]
+					if left and right and left:GetText() == "Talents" then
+						right:SetText(text)
+						lineText = text
+						GameTooltip:Show()
+						break
+					end
+				end
+			end
+		end
+		return
+	end
 	if addLine(GameTooltip, guid) then GameTooltip:Show() end
 end
