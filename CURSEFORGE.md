@@ -49,7 +49,7 @@ Are You Talented? puts each party and raid member's spec right on their frame: t
 - Each can be turned off.
 
 ### Stays up to date
-- Talents are read again about once a minute in a party, every five minutes in a raid, and on every ready check, so a respec shows soon after.
+- Talents refresh periodically while you're grouped, and on every ready check, so a respec shows soon after.
 - A spec stays on the frame when the member goes offline, and after you reload.
 
 ### Good to know
@@ -68,11 +68,11 @@ This addon was made with AI.
 
 ## B. Upload File form
 
-**File:** `dist\AreYouTalented-1.3.0.zip`
+**File:** `dist\AreYouTalented-1.3.1.zip`
 
 **Display name**
 ```
-Are You Talented? 1.3.0
+Are You Talented? 1.3.1
 ```
 
 **Release type:** `Release`
@@ -81,6 +81,11 @@ Are You Talented? 1.3.0
 
 **Changelog** (paste only the newest part; paste older parts too if they never went up)
 ```markdown
+1.3.1
+- Fixed: leaving a party or raid no longer interrupts checking another player's spec outside your group, and the inspect window is left clean when you open it yourself.
+- Fixed: spec icons on raid frames and raid-style party frames no longer sit over debuffs, role icons, or ready-check icons.
+- Fixed: the "Players outside your group too" option now dims cleanly when player tooltips are turned off.
+
 1.3.0
 - **Spec icon on tooltips:** player tooltips now show the spec's icon next to its name and talent point breakdown.
 - **Group summary in `/ayt list`:** listing your party or raid now starts with a count of each spec in the group, like `Summary: 2 Fury · 1 Arms`.

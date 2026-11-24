@@ -23,7 +23,7 @@ local function badgeOn(frame)
 	local badge = badges[frame]
 	if badge then return badge end
 	badge = CreateFrame("Frame", nil, frame)
-	badge:SetFrameLevel(frame:GetFrameLevel() + 10)
+	badge:SetFrameLevel(frame:GetFrameLevel() + 5)
 	badge.edge = badge:CreateTexture(nil, "BACKGROUND")
 	badge.edge:SetColorTexture(0, 0, 0, 1)
 	badge.edge:SetPoint("TOPLEFT", -1, 1)
@@ -75,6 +75,9 @@ local function update(frame, unit, compact)
 		return
 	end
 	local badge = badgeOn(frame)
+	local base = compact and frame.healthBar and frame.healthBar:GetFrameLevel() or frame:GetFrameLevel()
+	local level = base + (compact and 1 or 5)
+	if badge:GetFrameLevel() ~= level then badge:SetFrameLevel(level) end
 	place(badge, frame, compact)
 	if spec then
 		badge.icon:SetTexture(spec.icon or UNKNOWN_ICON)

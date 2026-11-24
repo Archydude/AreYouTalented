@@ -46,12 +46,14 @@ function ns.CreateOptions()
 	-- reused for Blizzard's own, which then can't call protected functions: its Discord
 	-- dropdown and button get blocked (ADDON_ACTION_FORBIDDEN on IsUserOAuthed).
 	local function control(kind, s, options, tooltip)
-		layout:AddInitializer(Settings.CreateControlInitializer("AreYouTalentedSettings" .. kind .. "Template", s,
-			options, tooltip))
+		local init = Settings.CreateControlInitializer("AreYouTalentedSettings" .. kind .. "Template", s,
+			options, tooltip)
+		layout:AddInitializer(init)
+		return init
 	end
 
 	local function checkbox(key, name, tooltip)
-		control("Checkbox", setting(key, VarType.Boolean, name), nil, tooltip)
+		return control("Checkbox", setting(key, VarType.Boolean, name), nil, tooltip)
 	end
 
 	local function dropdown(key, name, choices, tooltip)
@@ -76,11 +78,14 @@ function ns.CreateOptions()
 	end)
 	control("Slider", setting("size", VarType.Number, "Icon size"), sizeOptions,
 		"How big the icon is. On raid frames and raid-style party frames the icon grows and shrinks with the frame, up to about a third of its height; a smaller size here shrinks it.")
-	checkbox("tooltip", "Show specs on player tooltips",
+	local tooltipInit = checkbox("tooltip", "Show specs on player tooltips",
 		"Add a line like \"Talents: Fury (5/41/5)\" to the tooltip of a player whose talents were read: your party or raid members, and you.")
-	checkbox("others", "Players outside your group too",
+	local othersInit = checkbox("others", "Players outside your group too",
 		"Also read the talents of any player you point at or target, so their tooltip gets the line too. "
 			.. "It shows a moment after the mouse settles on them, while you're out of combat. Needs Show specs on player tooltips.")
+	if othersInit and othersInit.SetParentInitializer then
+		othersInit:SetParentInitializer(tooltipInit, function() return ns.db.tooltip end)
+	end
 
 	Settings.RegisterAddOnCategory(category)
 end

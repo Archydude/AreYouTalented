@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1
+- Fixed: leaving a party or raid no longer interrupts checking another player's spec outside your group, and the inspect window is left clean when you open it yourself.
+- Fixed: spec icons on raid frames and raid-style party frames no longer sit over debuffs, role icons, or ready-check icons.
+- Fixed: the "Players outside your group too" option now dims cleanly when player tooltips are turned off.
+
 ## 1.3.0
 - **Spec icon on tooltips:** player tooltips now show the spec's icon next to its name and talent point breakdown.
 - **Group summary in `/ayt list`:** listing your party or raid now starts with a count of each spec in the group, like `Summary: 2 Fury · 1 Arms`.

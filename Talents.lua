@@ -204,30 +204,35 @@ end
 
 -- Whether the player is looking at someone in the inspect window or their talents. A request of
 -- ours would replace what those windows show, so they go first.
-local askedSince -- when the inspect window was first seen waiting for its answer
+local askedUnit, askedSince -- the unit and time the inspect window first waited for an answer
 local function playerInspecting()
 	if InspectFrame then
 		if InspectFrame:IsShown() then
-			askedSince = nil
+			askedUnit, askedSince = nil, nil
 			return true
 		end
 		-- The player just asked to inspect someone and the window opens when the answer comes.
 		-- An answer that never comes doesn't hold us up for long.
-		if InspectFrame.unit then
-			askedSince = askedSince or GetTime()
+		local unit = ns.Plain(InspectFrame.unit)
+		if unit then
+			if unit ~= askedUnit then askedUnit, askedSince = unit, GetTime() end
 			if GetTime() - askedSince < TIMEOUT then return true end
 		else
-			askedSince = nil
+			askedUnit, askedSince = nil, nil
 		end
 	end
 	local spells = PlayerSpellsFrame
 	return spells and spells:IsShown() and spells.IsInspecting and spells:IsInspecting() and true or false
 end
 
-local function request(unit, guid, now)
+local function clearInspect()
+	if ClearInspectPlayer and not playerInspecting() then ClearInspectPlayer() end
+end
+
+local function request(unit, guid, now, isParty)
 	tried[guid] = now
 	lastSent = now
-	pending = { guid = guid, sent = now }
+	pending = { guid = guid, sent = now, party = isParty }
 	note("asking for %s's talents", tostring(ns.Plain(UnitName(unit)) or unit))
 	NotifyInspect(unit)
 end
@@ -241,6 +246,7 @@ local function tick()
 		note("no answer in %d seconds", TIMEOUT)
 		whyNot[pending.guid] = "silent"
 		pending = nil
+		clearInspect()
 	end
 	if now - lastSent < GAP then return end
 	local recheck = recheckAfter()
@@ -250,7 +256,7 @@ local function tick()
 			and (not checked[guid] or now - checked[guid] >= recheck)
 			and (not tried[guid] or now - tried[guid] >= RETRY) then
 			if CanInspect(unit, false) then
-				request(unit, guid, now)
+				request(unit, guid, now, true)
 				return
 			end
 			whyNot[guid] = "refused"
@@ -310,7 +316,7 @@ local function tryOther()
 		return
 	end
 	wantOther[unit] = nil
-	if CanInspect(unit, false) then request(unit, guid, now) end
+	if CanInspect(unit, false) then request(unit, guid, now, false) end
 	if next(wantOther) and not otherQueued then
 		otherQueued = true
 		C_Timer.After(GAP + 0.05, tryOther)
@@ -347,14 +353,17 @@ local function onInspectReady(guid)
 	if C_Traits.HasValidInspectData and not C_Traits.HasValidInspectData() then
 		note("an answer came without talents in it")
 		whyNot[guid] = "empty"
+		if ours then clearInspect() end
 		return
 	end
 	local entry, why = read(INSPECT_CONFIG)
 	if not entry then
 		note("couldn't read the answer: %s", tostring(why))
 		whyNot[guid] = "unreadable"
+		if ours then clearInspect() end
 		return
 	end
+	if ours then clearInspect() end
 	checked[guid] = GetTime()
 	whyNot[guid] = nil
 	ns.db.seen[guid] = entry
@@ -386,7 +395,7 @@ local function sync()
 	elseif not inGroup and ticker then
 		ticker:Cancel()
 		ticker = nil
-		pending = nil
+		if pending and pending.party then pending = nil end
 	end
 	-- The party frames get their members on the same event; the icons follow right after.
 	C_Timer.After(0.2, ns.Refresh)

@@ -50,6 +50,24 @@ local function validSeen(entry, now)
 		and type(entry.at) == "number" and now - entry.at <= KEEP_SECONDS
 end
 
+function ns.PruneSeen()
+	if not (ns.db and ns.db.seen) then return end
+	local now = time()
+	local kept = {}
+	for guid, entry in pairs(ns.db.seen) do
+		if type(guid) ~= "string" or not validSeen(entry, now) then
+			ns.db.seen[guid] = nil
+		else
+			kept[#kept + 1] = guid
+		end
+	end
+	-- Over the limit: the ones read longest ago go.
+	if #kept > KEEP_PLAYERS then
+		table.sort(kept, function(a, b) return ns.db.seen[a].at > ns.db.seen[b].at end)
+		for i = KEEP_PLAYERS + 1, #kept do ns.db.seen[kept[i]] = nil end
+	end
+end
+
 local function load()
 	local saved = type(AreYouTalentedDB) == "table" and AreYouTalentedDB or {}
 	AreYouTalentedDB = saved
@@ -62,26 +80,18 @@ local function load()
 		if ns.DEFAULTS[key] == nil then saved[key] = nil end
 	end
 	if saved.side ~= "left" then saved.side = "right" end
-	local now = time()
-	local kept = {}
-	for guid, entry in pairs(saved.seen) do
-		if type(guid) ~= "string" or not validSeen(entry, now) then
-			saved.seen[guid] = nil
-		else
-			kept[#kept + 1] = guid
-		end
-	end
-	-- Over the limit: the ones read longest ago go.
-	if #kept > KEEP_PLAYERS then
-		table.sort(kept, function(a, b) return saved.seen[a].at > saved.seen[b].at end)
-		for i = KEEP_PLAYERS + 1, #kept do saved.seen[kept[i]] = nil end
-	end
 	ns.db = saved
+	ns.PruneSeen()
 end
 
 local events = CreateFrame("Frame")
 events:RegisterEvent("ADDON_LOADED")
-events:SetScript("OnEvent", function(self, _, name)
+events:RegisterEvent("PLAYER_LOGOUT")
+events:SetScript("OnEvent", function(self, event, name)
+	if event == "PLAYER_LOGOUT" then
+		ns.PruneSeen()
+		return
+	end
 	if name ~= ADDON_NAME then return end
 	self:UnregisterEvent("ADDON_LOADED")
 	load()

@@ -22,14 +22,15 @@ Esc > Options > AddOns > Are You Talented?, or type `/ayt`:
 ## Commands
 
 - `/ayt`: the options.
-- `/ayt list`: your party's or raid's specs, in chat.
+- `/ayt list`: your party's or raid's specs, in chat, starting with a summary count of each spec.
 - `/ayt refresh`: read everyone's talents again now.
+- `/ayt debug`: print what is read in chat until you run it again or reload.
 
 ## Good to know
 
-- A member's talents are read a few seconds after they join, wherever they are, once you're out of combat. A full raid takes about a minute. Until a member is read, their frame shows a grey question mark.
+- A member's talents are read a few seconds after they join, wherever they are, once you're out of combat. A full raid fills in shortly after. Until a member is read, their frame shows a grey question mark.
 - A spec that was read stays on the frame when the member goes offline, and after you reload or log back in.
-- Talents are read again about once a minute in a party and every five minutes in a raid, and on every ready check, so a respec or a switch to a second spec shows soon after.
+- Talents refresh periodically while you're grouped, and on every ready check, so a respec or a switch to a second spec shows soon after.
 - A player outside your group is read a moment after the mouse settles on them, or after you target them, while you're out of combat. The line then shows on the tooltip you're looking at.
 - Players the game doesn't let you inspect get no tooltip line.
 - A member with no talent points spent gets no icon.
